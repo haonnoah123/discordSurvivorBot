@@ -20,6 +20,7 @@ public class Main {
 	public static LocalDate whenIdolChanged = LocalDate.now();
 	public static ArrayList<Players> peoplePlaying = new ArrayList<>();
 	public static String gameMaster = "Someone";
+	public static boolean hasGameStarted = false;
 
 	public static void main(String[] args) throws LoginException {
 		System.out.println(idolNumber);
