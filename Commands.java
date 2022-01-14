@@ -8,6 +8,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -47,10 +49,24 @@ public class Commands extends ListenerAdapter {
 			 * !isAlreadyEnroled(tempUser) && !Main.hasGameStarted ) { setup(messageSent,
 			 * tempUser,tempPlayer, event, user); }
 			 */
-			// checks to see if message sent is todays idol and dm's the user and the game
+			
+			// checks to see if message sent is todays idol and dm's the user and sends the game
 			// master a chat
-			if (event.getChannel().getName().equals("idol-hunting")) {
+			if (event.getChannel().getName().equals("idol-hunting") && Main.largeGroupIdol) {
 				if (Integer.parseInt(messageSent) == Main.idolNumber && Main.isIdolFound == false) {
+					System.out.println(event.getAuthor());
+					event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You got the idol"))
+							.queue();
+					TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
+							.getTextChannelsByName("henry-bot-chat", true).get(0);
+					textChannel.sendMessage(user + " got an idol").queue();
+					Main.isIdolFound = true;
+				}
+			}
+			
+			//team idol mode
+			if (event.getChannel().getName().equals("idol-hunting") && !Main.largeGroupIdol) {
+				if (Integer.parseInt(messageSent) == player.getTeam().getIdolNumber() && !player.getTeam().getIsIdolFound()) {
 					System.out.println(event.getAuthor());
 					event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You got the idol"))
 							.queue();
@@ -137,6 +153,22 @@ public class Commands extends ListenerAdapter {
 			if (messageSent.equalsIgnoreCase(Main.prefix + "useIdol")) {
 				player.playIdol();
 			}
+			
+			if (messageSent.equalsIgnoreCase(Main.prefix + "resetTeams") && user.equals(Main.gameMaster)) {
+				clearTeams();
+			}
+			
+			if(messageSent.equalsIgnoreCase(Main.prefix + "switchIdolMode") && user.equals(Main.gameMaster)) {
+				Main.largeGroupIdol = false;
+			}
+			
+			if(messageSent.equalsIgnoreCase(Main.prefix + "changeIdol") && user.equals(Main.gameMaster)) {
+				changeIdol();
+			}
+			
+			if(messageSent.equalsIgnoreCase(Main.prefix + "help") && user.equals(Main.gameMaster)) {
+				help(event);
+			}
 
 			// save data
 			// for(int i = 0; i < Main.peoplePlaying.size(); i++) {
@@ -159,6 +191,46 @@ public class Commands extends ListenerAdapter {
 			 * event.getChannel().sendMessage("Hey there, I'm alive.").queue(); }
 			 * 
 			 */}
+	}
+	
+	public static void help(MessageReceivedEvent event) {
+		event.getChannel().sendMessage("!startGame to start game").queue();
+		event.getChannel().sendMessage("!resetTeams use after you switch teams").queue();
+		event.getChannel().sendMessage("!switchIdolMode switch from large group idol to small group idol, default is small group idol").queue();
+		event.getChannel().sendMessage("!changeIdol in smallGroupIdol mode it will reset all the groups idols").queue();
+	}
+	
+	public static void changeIdol() {
+		for(Teams t : Main.survivorTeams) {
+			t.resetIdolNumber();
+		}
+	}
+	
+	public static void findTeams(MessageReceivedEvent event) {	
+		//gets all the roles in the server
+		ArrayList<Role> roles = (ArrayList<Role>) event.getGuild().getRoles();
+		//goes through all the roles
+		for(Role r : roles) {
+			//if the roles has the word "team" in it it'll make a Team and add it to the ArrayList
+			if(r.getName().contains("team")) {
+				Teams tempTeam = new Teams(r);
+				Main.survivorTeams.add(tempTeam);
+				//find everyone with the role
+				ArrayList<Member> members = (ArrayList<Member>) event.getGuild().findMembersWithRoles(r);
+				for(Member m : members) {
+					//adds everyone with the role to the team
+					Players tempPlayer = Main.peoplePlaying.get(findPlayer(m.getUser()));
+					tempPlayer.setPlayerTeam(tempTeam);
+				}
+			}
+		}
+	}
+	
+	public static void clearTeams() {
+		for(int i = 0; i < Main.survivorTeams.size(); i++) {
+			Main.survivorTeams.remove(i);
+			i--;
+		}
 	}
 
 	public static void setup(String messageSent, User tempUser, Players tempPlayer, MessageReceivedEvent event,
