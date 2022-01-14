@@ -11,6 +11,7 @@ public class Players{
 	private boolean isIn;
 	private boolean hasVoted;
 	private boolean hasPlayedIdol;
+	private Teams team;
 	
 	public Players(String names, User u) {
 		name = names;
@@ -19,6 +20,10 @@ public class Players{
 		isIn = true;
 		hasVoted = false;
 		hasPlayedIdol = false;
+	}
+	
+	public void setPlayerTeam(Teams t) {
+		team = t;
 	}
 	
 	public void newDay() {
@@ -90,5 +95,9 @@ public class Players{
 	
 	public boolean getHasPlayedIdol() {
 		return hasPlayedIdol;
+	}
+	
+	public Teams getTeam() {
+		return team;
 	}
 }
