@@ -6,6 +6,7 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
@@ -14,6 +15,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.utils.concurrent.Task;
 
 public class Commands extends ListenerAdapter {
 
@@ -156,6 +158,8 @@ public class Commands extends ListenerAdapter {
 			
 			if (messageSent.equalsIgnoreCase(Main.prefix + "resetTeams") && user.equals(Main.gameMaster)) {
 				clearTeams();
+				findTeams(event);
+				System.out.println(Main.survivorTeams.get(0).getIdolNumber());
 			}
 			
 			if(messageSent.equalsIgnoreCase(Main.prefix + "switchIdolMode") && user.equals(Main.gameMaster)) {
@@ -164,10 +168,18 @@ public class Commands extends ListenerAdapter {
 			
 			if(messageSent.equalsIgnoreCase(Main.prefix + "changeIdol") && user.equals(Main.gameMaster)) {
 				changeIdol();
+				System.out.println(Main.survivorTeams.get(0).getIdolNumber());
 			}
 			
 			if(messageSent.equalsIgnoreCase(Main.prefix + "help") && user.equals(Main.gameMaster)) {
 				help(event);
+			}
+			
+			if(messageSent.equalsIgnoreCase(Main.prefix + "setup") && user.equals(Main.gameMaster)) {
+				setupSurvivor(event);
+				clearTeams();
+				findTeams(event);
+				System.out.println(Main.survivorTeams.get(0).getIdolNumber());
 			}
 
 			// save data
@@ -193,6 +205,21 @@ public class Commands extends ListenerAdapter {
 			 */}
 	}
 	
+	public static void setupSurvivor(MessageReceivedEvent event) {
+		//gets a list of all members
+		List<Member> members = event.getGuild().getMembers();
+		//sorts through them
+		for(Member m : members) {
+			User tempUser = m.getUser();
+			String user = m.getUser().getName();
+			Players tempPlayer = new Players(user, tempUser);
+			//finds out if they are already a player
+			if (findPlayer(tempUser) == -1 && !user.equals("JeffBot")) {
+				Main.peoplePlaying.add(tempPlayer);
+			}
+		}
+	}
+	
 	public static void help(MessageReceivedEvent event) {
 		event.getChannel().sendMessage("!startGame to start game").queue();
 		event.getChannel().sendMessage("!resetTeams use after you switch teams").queue();
@@ -208,15 +235,17 @@ public class Commands extends ListenerAdapter {
 	
 	public static void findTeams(MessageReceivedEvent event) {	
 		//gets all the roles in the server
-		ArrayList<Role> roles = (ArrayList<Role>) event.getGuild().getRoles();
+		List<Role> roles = new ArrayList<>();
+		roles = event.getGuild().getRoles();
 		//goes through all the roles
 		for(Role r : roles) {
-			//if the roles has the word "team" in it it'll make a Team and add it to the ArrayList
-			if(r.getName().contains("team")) {
+			//if the roles has the word "Team" in it it'll make a Team and add it to the ArrayList
+			if(r.getName().contains("Team")) {
 				Teams tempTeam = new Teams(r);
 				Main.survivorTeams.add(tempTeam);
 				//find everyone with the role
-				ArrayList<Member> members = (ArrayList<Member>) event.getGuild().findMembersWithRoles(r);
+				List<Member> members = new ArrayList<>();
+				members = event.getGuild().getMembersWithRoles(r);
 				for(Member m : members) {
 					//adds everyone with the role to the team
 					Players tempPlayer = Main.peoplePlaying.get(findPlayer(m.getUser()));
