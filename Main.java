@@ -9,6 +9,9 @@ import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 public class Main {
 
@@ -26,11 +29,10 @@ public class Main {
 
 	public static void main(String[] args) throws LoginException {
 		System.out.println(idolNumber);
-		System.out.println(LocalTime.now());
-		System.out.println(LocalTime.MIDNIGHT);
-		JDABuilder jda = JDABuilder.createDefault("OTE5NjkzMDQ2Njg0MTk2ODY1.YbZg5Q.LuoDnbFyksmMhzo9R6meHHnO7IQ");
+		JDABuilder jda = JDABuilder.createDefault("OTE5NjkzMDQ2Njg0MTk2ODY1.YbZg5Q.LuoDnbFyksmMhzo9R6meHHnO7IQ")
+				.setChunkingFilter(ChunkingFilter.ALL).setMemberCachePolicy(MemberCachePolicy.ALL)
+				.enableIntents(GatewayIntent.GUILD_MEMBERS);
 		jda.setActivity(Activity.playing("The bot version of Henry"));
-		//jda.setActivity(Activity.listening("Weezer"));
 		jda.setStatus(OnlineStatus.ONLINE);
 		jda.addEventListeners(new Commands());
 		jda.build();
