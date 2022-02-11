@@ -1,5 +1,7 @@
 package survivor;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Time;
@@ -7,6 +9,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.IOException;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
@@ -180,7 +186,11 @@ public class Commands extends ListenerAdapter {
 				clearTeams();
 				findTeams(event);
 				System.out.println(Main.survivorTeams.get(0).getIdolNumber());
+				System.out.println(Main.peoplePlaying.size());
+				System.out.println(Main.survivorTeams.size());
 			}
+			
+			saveData();
 
 			// save data
 			// for(int i = 0; i < Main.peoplePlaying.size(); i++) {
@@ -303,5 +313,37 @@ public class Commands extends ListenerAdapter {
 		}
 		return s;
 	}
+	
+	public static void saveData() {
+		String fileName = Main.fileName;
+		try {
+			WriteFile data = new WriteFile(fileName, true);
+			data.clearFile();
+			for(Players p : Main.peoplePlaying) {
+				data.writeToFile(p.toString());
+			}
+			System.out.println("Text File Written");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	  public static ArrayList<String> importFile() {
+		  String fileName = Main.fileName;
+		    ArrayList<String> words = new ArrayList<>();
+		    try {
+		      File myObj = new File(fileName);
+		      Scanner myReader = new Scanner(myObj);
+		      while (myReader.hasNextLine()) {
+		        String data = myReader.nextLine();
+		        words.add(data);
+		      }
+		      myReader.close();
+		    } catch (FileNotFoundException e) {
+		      System.out.println("An error occurred.");
+		      e.printStackTrace();
+		    }
+		    return words;
+		  }
 
 }
