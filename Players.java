@@ -22,6 +22,17 @@ public class Players{
 		hasPlayedIdol = false;
 	}
 	
+	public Players(String name, User user, int idolCount, int votesAgainst, boolean isIn, boolean hasVoted, boolean hasPlayedIdol, Teams team) {
+		this.name = name;
+		this.user = user;
+		this.idolCount = idolCount;
+		this.votesAgainst = votesAgainst;
+		this.isIn = isIn;
+		this.hasVoted = hasVoted;
+		this.hasPlayedIdol = hasPlayedIdol;
+		this.team = team;
+	}
+	
 	public void setPlayerTeam(Teams t) {
 		team = t;
 	}
@@ -99,5 +110,15 @@ public class Players{
 	
 	public Teams getTeam() {
 		return team;
+	}
+	
+	public String toString() {
+		String info = (name + "\n" + user.getIdLong() + "\n" + idolCount + "\n" + votesAgainst + "\n" + isIn + "\n" + hasVoted + "\n" + hasPlayedIdol + "\n");
+		if(team != null) {
+			info += team.getRole().getIdLong() + "\n";
+		} else {
+			info += 0 + "\n";
+		}
+		return info;
 	}
 }
