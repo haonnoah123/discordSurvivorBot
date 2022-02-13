@@ -68,6 +68,7 @@ public class Commands extends ListenerAdapter {
 					TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
 							.getTextChannelsByName("henry-bot-chat", true).get(0);
 					textChannel.sendMessage(user + " got an idol").queue();
+					player.addIdol();
 					Main.isIdolFound = true;
 				}
 			}
@@ -81,7 +82,8 @@ public class Commands extends ListenerAdapter {
 					TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
 							.getTextChannelsByName("henry-bot-chat", true).get(0);
 					textChannel.sendMessage(user + " got an idol").queue();
-					Main.isIdolFound = true;
+					player.addIdol();
+					player.getTeam().idolFound();
 				}
 			}
 
@@ -252,7 +254,7 @@ public class Commands extends ListenerAdapter {
 		for(Role r : roles) {
 			//if the roles has the word "Team" in it it'll make a Team and add it to the ArrayList
 			if(r.getName().contains("Team")) {
-				Teams tempTeam = new Teams(r);
+				Teams tempTeam = new Teams(r.getIdLong());
 				Main.survivorTeams.add(tempTeam);
 				//find everyone with the role
 				List<Member> members = new ArrayList<>();
