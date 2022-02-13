@@ -4,18 +4,18 @@ import net.dv8tion.jda.api.entities.Role;
 
 public class Teams {
 
-	private Role role;
+	private long roleId;
 	private int idolNumber;
 	private boolean isIdolFound;
 	
-	public Teams(Role teamRole) {
-		role = teamRole;
+	public Teams(long teamRole) {
+		roleId = teamRole;
 		idolNumber = (int)(Math.random() * 100 + 1);
 		isIdolFound = false;
 	}
 	
-	public Teams(Role role, int idolNumber, boolean isIdolFound) {
-		this.role = role;
+	public Teams(long role, int idolNumber, boolean isIdolFound) {
+		this.roleId = role;
 		this.idolNumber = idolNumber;
 		this.isIdolFound = isIdolFound;
 	}
@@ -28,12 +28,12 @@ public class Teams {
 		return isIdolFound;
 	}
 		
-	public Role getRole() {
-		return role;
+	public long getRoleId() {
+		return roleId;
 	}
 
-	public void setRole(Role role) {
-		this.role = role;
+	public void setRole(long role) {
+		this.roleId = role;
 	}
 
 	public int getIdolNumber() {
@@ -46,7 +46,7 @@ public class Teams {
 	}
 	
 	public String toString() {
-		return role + "\n" + idolNumber + "\n" + isIdolFound + "\n" + "\n";
+		return roleId + "\n" + idolNumber + "\n" + isIdolFound + "\n" + "\n";
 	}
 
 }
