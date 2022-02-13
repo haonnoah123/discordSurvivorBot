@@ -9,7 +9,7 @@ public class WriteFile {
 
 	
 	private String path;
-	private boolean appendToFile = true;
+	private boolean appendToFile = false;
 	
 	public WriteFile(String filePath) {
 		path = filePath;
@@ -23,7 +23,7 @@ public class WriteFile {
 	public void writeToFile(String textLine) throws IOException{
 		FileWriter write = new FileWriter(path, appendToFile);
 		PrintWriter printLine = new PrintWriter(write);
-		printLine.printf("%s" + "%n", textLine);
+		printLine.printf(textLine);
 		printLine.close();
 	}
 	
