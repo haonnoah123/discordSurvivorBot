@@ -14,6 +14,12 @@ public class Teams {
 		isIdolFound = false;
 	}
 	
+	public Teams(Role role, int idolNumber, boolean isIdolFound) {
+		this.role = role;
+		this.idolNumber = idolNumber;
+		this.isIdolFound = isIdolFound;
+	}
+	
 	public void idolFound() {
 		isIdolFound = true;
 	}
@@ -37,6 +43,10 @@ public class Teams {
 	public void resetIdolNumber() {
 		this.idolNumber = (int)(Math.random() * 100 + 1);
 		isIdolFound = false;
+	}
+	
+	public String toString() {
+		return role + "\n" + idolNumber + "\n" + isIdolFound + "\n" + "\n";
 	}
 
 }
