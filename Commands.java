@@ -190,7 +190,8 @@ public class Commands extends ListenerAdapter {
 				System.out.println(Main.survivorTeams.size());
 			}
 			
-			saveData();
+			saveData(Main.playerFileName);
+			saveTeamData(Main.teamFileName);
 
 			// save data
 			// for(int i = 0; i < Main.peoplePlaying.size(); i++) {
@@ -314,8 +315,7 @@ public class Commands extends ListenerAdapter {
 		return s;
 	}
 	
-	public static void saveData() {
-		String fileName = Main.fileName;
+	public static void saveData(String fileName) {
 		try {
 			WriteFile data = new WriteFile(fileName, true);
 			data.clearFile();
@@ -328,8 +328,20 @@ public class Commands extends ListenerAdapter {
 		}
 	}
 	
-	  public static ArrayList<String> importFile() {
-		  String fileName = Main.fileName;
+	public static void saveTeamData(String fileName) {
+		try {
+			WriteFile data = new WriteFile(fileName, true);
+			data.clearFile();
+			for(Teams t : Main.survivorTeams) {
+				data.writeToFile(t.toString());
+			}
+			System.out.println("Text File Written");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	  public static ArrayList<String> importFile(String fileName) {
 		    ArrayList<String> words = new ArrayList<>();
 		    try {
 		      File myObj = new File(fileName);
