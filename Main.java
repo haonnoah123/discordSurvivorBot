@@ -9,7 +9,9 @@ import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.role.RoleCreateEvent;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -27,11 +29,13 @@ public class Main {
 	public static boolean hasGameStarted = false;
 	public static ArrayList<Teams> survivorTeams = new ArrayList<>();
 	public static boolean largeGroupIdol = false;
-	public static String fileName = "/Users/90309333/Desktop/SaveData";
+	public static String playerFileName = "C:\\Users\\19523\\Documents\\SaveData.txt";
+	public static String teamFileName = "C:\\Users\\19523\\Documents\\teamSaveData.txt";
 
 	public static void main(String[] args) throws LoginException {
-		if(Commands.importFile().size() != 0) {
-			loadData();
+		if(Commands.importFile(playerFileName).size() != 0) {
+			loadTeamData();
+			loadPlayerData();
 		}
 		System.out.println(idolNumber);
 		JDABuilder jda = JDABuilder.createDefault("OTE5NjkzMDQ2Njg0MTk2ODY1.YbZg5Q.LuoDnbFyksmMhzo9R6meHHnO7IQ")
@@ -43,21 +47,33 @@ public class Main {
 		jda.build();
 	}
 	
-	public static void loadData() {
+	public static void loadTeamData() {
 		ArrayList<String> data = new ArrayList<>();
-		data = Commands.importFile();
+		data = Commands.importFile(teamFileName);
+		for(int i = 0; i < data.size(); i+=3) {
+			int a = i;
+			String role = data.get(a);
+			int idolNumber = Integer.parseInt(data.get(a+=1));
+			boolean isIdolFound = Boolean.parseBoolean(data.get(a+=1));
+			Teams t = new Teams(null, idolNumber, isIdolFound);
+			survivorTeams.add(t);
+		}
+	}
+	
+	public static void loadPlayerData() {
+		ArrayList<String> data = new ArrayList<>();
+		data = Commands.importFile(playerFileName);
 		for(int i = 0; i < data.size(); i+=9) {
-			String name = data.get(i);
-			System.out.println("test");
-			long userId = Long.parseLong(data.get(i++));
-			int idolCount = Integer.parseInt(data.get(i+=2));
-			System.out.println(data.get(i));
-			int votesAgainst = Integer.parseInt(data.get(i+=3));
-			boolean isIn = Boolean.parseBoolean(data.get(i+=4));
-			boolean hasVoted = Boolean.parseBoolean(data.get(i+=5));
-			boolean hasPlayedIdol = Boolean.parseBoolean(data.get(i+=6));
-			long teamId = Long.parseLong(data.get(i+=7));
-			Players p = new Players(name, null, idolCount, votesAgainst, isIn, hasVoted, hasPlayedIdol, null);
+			int a = i;
+			String name = data.get(a);
+			User u = User.fromId(Long.parseLong(data.get(a+=1)));
+			int idolCount = Integer.parseInt(data.get(a+=1));
+			int votesAgainst = Integer.parseInt(data.get(a+=1));
+			boolean isIn = Boolean.parseBoolean(data.get(a+=1));
+			boolean hasVoted = Boolean.parseBoolean(data.get(a+=1));
+			boolean hasPlayedIdol = Boolean.parseBoolean(data.get(a+=1));
+			long teamId = Long.parseLong(data.get(a+=1));
+			Players p = new Players(name, u, idolCount, votesAgainst, isIn, hasVoted, hasPlayedIdol, null);
 			Main.peoplePlaying.add(p);
 		}
 		System.out.println("done loading data: " + Main.peoplePlaying.size() + " People are playing");
