@@ -1,17 +1,19 @@
 package survivor;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.security.auth.login.LoginException;
 
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.role.RoleCreateEvent;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -29,7 +31,7 @@ public class Main {
 	public static boolean hasGameStarted = false;
 	public static ArrayList<Teams> survivorTeams = new ArrayList<>();
 	public static boolean largeGroupIdol = false;
-	public static String playerFileName = "C:\\Users\\19523\\Documents\\SaveData.txt";
+	public static String playerFileName = "G:\\My Drive\\SaveData";
 	public static String teamFileName = "C:\\Users\\19523\\Documents\\teamSaveData.txt";
 
 	public static void main(String[] args) throws LoginException {
@@ -37,7 +39,7 @@ public class Main {
 			loadTeamData();
 			loadPlayerData();
 		}
-		System.out.println(idolNumber);
+		//System.out.println(survivorTeams.get(0).getIdolNumber());
 		JDABuilder jda = JDABuilder.createDefault("OTE5NjkzMDQ2Njg0MTk2ODY1.YbZg5Q.LuoDnbFyksmMhzo9R6meHHnO7IQ")
 				.setChunkingFilter(ChunkingFilter.ALL).setMemberCachePolicy(MemberCachePolicy.ALL)
 				.enableIntents(GatewayIntent.GUILD_MEMBERS);
@@ -50,14 +52,15 @@ public class Main {
 	public static void loadTeamData() {
 		ArrayList<String> data = new ArrayList<>();
 		data = Commands.importFile(teamFileName);
-		for(int i = 0; i < data.size(); i+=3) {
+		for(int i = 0; i < data.size(); i+=4) {
 			int a = i;
-			String role = data.get(a);
+			long roleId = Long.parseLong(data.get(a));
 			int idolNumber = Integer.parseInt(data.get(a+=1));
 			boolean isIdolFound = Boolean.parseBoolean(data.get(a+=1));
-			Teams t = new Teams(null, idolNumber, isIdolFound);
+			Teams t = new Teams(roleId, idolNumber, isIdolFound);
 			survivorTeams.add(t);
 		}
+		System.out.println("done loading data: " + Main.survivorTeams.size() + " teams are playing");
 	}
 	
 	public static void loadPlayerData() {
@@ -73,7 +76,13 @@ public class Main {
 			boolean hasVoted = Boolean.parseBoolean(data.get(a+=1));
 			boolean hasPlayedIdol = Boolean.parseBoolean(data.get(a+=1));
 			long teamId = Long.parseLong(data.get(a+=1));
-			Players p = new Players(name, u, idolCount, votesAgainst, isIn, hasVoted, hasPlayedIdol, null);
+			Teams tempTeam = null;
+			for(Teams t: survivorTeams) {
+				if(teamId == t.getRoleId()) {
+					tempTeam = t;
+				}
+			}
+			Players p = new Players(name, u, idolCount, votesAgainst, isIn, hasVoted, hasPlayedIdol, tempTeam);
 			Main.peoplePlaying.add(p);
 		}
 		System.out.println("done loading data: " + Main.peoplePlaying.size() + " People are playing");
