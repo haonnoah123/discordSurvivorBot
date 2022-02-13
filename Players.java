@@ -115,10 +115,10 @@ public class Players{
 	public String toString() {
 		String info = (name + "\n" + user.getIdLong() + "\n" + idolCount + "\n" + votesAgainst + "\n" + isIn + "\n" + hasVoted + "\n" + hasPlayedIdol + "\n");
 		if(team != null) {
-			info += team.getRole().getIdLong() + "\n";
+			info += team.getRole().getIdLong();
 		} else {
-			info += 0 + "\n";
+			info += 0;
 		}
-		return info;
+		return (String)info + "\n" + "\n";
 	}
 }
