@@ -115,7 +115,7 @@ public class Players{
 	public String toString() {
 		String info = (name + "\n" + user.getIdLong() + "\n" + idolCount + "\n" + votesAgainst + "\n" + isIn + "\n" + hasVoted + "\n" + hasPlayedIdol + "\n");
 		if(team != null) {
-			info += team.getRole().getIdLong();
+			info += team.getRoleId();
 		} else {
 			info += 0;
 		}
