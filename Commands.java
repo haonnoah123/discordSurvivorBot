@@ -74,7 +74,7 @@ public class Commands extends ListenerAdapter {
 			}
 			
 			//team idol mode
-			if (event.getChannel().getName().equals("idol-hunting") && !Main.largeGroupIdol) {
+			if (event.getChannel().getName().contains("idol-hunting") && !Main.largeGroupIdol) {
 				if (Integer.parseInt(messageSent) == player.getTeam().getIdolNumber() && !player.getTeam().getIsIdolFound()) {
 					System.out.println(event.getAuthor());
 					event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You got the idol"))
