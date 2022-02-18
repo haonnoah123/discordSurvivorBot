@@ -175,8 +175,14 @@ public class Commands extends ListenerAdapter {
 			}
 			
 			if(messageSent.equalsIgnoreCase(Main.prefix + "changeIdol") && user.equals(Main.gameMaster)) {
+				String str = "";
 				changeIdol();
-				System.out.println(Main.survivorTeams.get(0).getIdolNumber());
+				TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
+						.getTextChannelsByName("henry-bot-chat", true).get(0);
+				for(Teams t: Main.survivorTeams) {
+					str += event.getJDA().getRoleById(t.getRoleId()).getAsMention() + ": " + t.getIdolNumber() + "\n";
+				}
+				textChannel.sendMessage(str).queue();
 			}
 			
 			if(messageSent.equalsIgnoreCase(Main.prefix + "help") && user.equals(Main.gameMaster)) {
@@ -187,35 +193,102 @@ public class Commands extends ListenerAdapter {
 				setupSurvivor(event);
 				clearTeams();
 				findTeams(event);
+				findNonPlayers();
+				Main.hasGameStarted = true;
+				TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
+						.getTextChannelsByName("henry-bot-chat", true).get(0);
+				textChannel.sendMessage("done").queue();
 				System.out.println(Main.survivorTeams.get(0).getIdolNumber());
 				System.out.println(Main.peoplePlaying.size());
 				System.out.println(Main.survivorTeams.size());
 			}
 			
+			if(messageSent.contains(Main.prefix + "removeIdol") && user.equals(Main.gameMaster)) {
+				TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
+						.getTextChannelsByName("henry-bot-chat", true).get(0);
+				if(removeIdol(messageSent.substring(10))) {
+						textChannel.sendMessage("done").queue();
+				} else {
+						textChannel.sendMessage("player not found try again").queue();
+				}
+			}
+			
+			if(messageSent.contains(Main.prefix + "addIdol") && user.equals(Main.gameMaster)) {
+				TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
+						.getTextChannelsByName("henry-bot-chat", true).get(0);
+				if(addIdol(messageSent.substring(7))) {
+						textChannel.sendMessage("done").queue();
+				} else {
+						textChannel.sendMessage("player not found try again").queue();
+				}
+			}
+			
+			if(messageSent.equalsIgnoreCase(Main.prefix + "getAllIdols") && user.equals(Main.gameMaster)) {
+				String str = "";
+				for(Players p: Main.peoplePlaying) {
+					if(p.getIsIn()) {
+						str += p.getName() + ": " + p.amountOfIdols() + "\n";
+					}
+				}
+				TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
+						.getTextChannelsByName("henry-bot-chat", true).get(0);
+					textChannel.sendMessage(str).queue();
+			}
+			
+			if(messageSent.contains(Main.prefix + "removePlayer") && user.equals(Main.gameMaster)) {
+				TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
+						.getTextChannelsByName("henry-bot-chat", true).get(0);
+				if(removePlayer(messageSent.substring(12))) {
+					textChannel.sendMessage("done").queue();
+				} else {
+					textChannel.sendMessage("player not found");
+				}
+			}
+
 			saveData(Main.playerFileName);
 			saveTeamData(Main.teamFileName);
-
-			// save data
-			// for(int i = 0; i < Main.peoplePlaying.size(); i++) {
-			// Players p = null;
-			// p = Main.peoplePlaying.get(i);
-			// arrayListToFile.toTextFile(p);
-			// }
-
-			/*
-			 * if (messageSent.length() > 5) { if (messageSent.substring(0,
-			 * 5).equalsIgnoreCase(Main.prefix + "vote")) { TextChannel textChannel =
-			 * event.getJDA().getGuildById("919693815198138399")
-			 * .getTextChannelsByName("tribal-council", true).get(0);
-			 * textChannel.sendMessage("Vote #" + Main.i + " goes to " +
-			 * messageSent.substring(5)).queue(); Main.i++; } } if
-			 * (messageSent.equalsIgnoreCase(Main.prefix + "info") &&
-			 * event.getChannel().getName().equals("general")) {
-			 * System.out.println(event.getChannel());
-			 * event.getChannel().sendTyping().queue();
-			 * event.getChannel().sendMessage("Hey there, I'm alive.").queue(); }
-			 * 
-			 */}
+			}
+	}
+	
+	public static boolean removePlayer(String messageSent) {
+		boolean b = false;
+		for(Players p: Main.peoplePlaying) {
+			if(messageSent.contains(p.getName())) {
+				p.voteOut();
+				b = true;
+			}
+		}
+		return b;
+	}
+	
+	public static void findNonPlayers() {
+		for(Players p: Main.peoplePlaying) {
+			if(p.getTeam() == null || p.getTeam().getRoleId() == 0) {
+				p.voteOut();
+			}
+		}
+	}
+	
+	public static boolean removeIdol(String messageSent) {
+		boolean b = false;
+		for(Players p: Main.peoplePlaying) {
+			if(messageSent.contains(p.getName())) {
+				p.useIdol();
+				b = true;
+			}
+		}
+		return b;
+	}
+	
+	public static boolean addIdol(String messageSent) {
+		boolean b = false;
+		for(Players p: Main.peoplePlaying) {
+			if(messageSent.contains(p.getName())) {
+				p.addIdol();
+				b = true;
+			}
+		}
+		return b;
 	}
 	
 	public static void setupSurvivor(MessageReceivedEvent event) {
