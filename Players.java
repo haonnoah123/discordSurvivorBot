@@ -37,6 +37,10 @@ public class Players{
 		team = t;
 	}
 	
+	public void useIdol() {
+		idolCount--;
+	}
+	
 	public void newDay() {
 		votesAgainst = 0;
 		hasVoted = false;
