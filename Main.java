@@ -31,8 +31,8 @@ public class Main {
 	public static boolean hasGameStarted = false;
 	public static ArrayList<Teams> survivorTeams = new ArrayList<>();
 	public static boolean largeGroupIdol = false;
-	public static String playerFileName = "G:\\My Drive\\SaveData";
-	public static String teamFileName = "C:\\Users\\19523\\Documents\\teamSaveData.txt";
+	public static String playerFileName = "/Users/90309333/Desktop/SaveData.txt";
+	public static String teamFileName = "/Users/90309333/Desktop/teamSaveData.txt";
 
 	public static void main(String[] args) throws LoginException {
 		if(Commands.importFile(playerFileName).size() != 0) {
@@ -52,7 +52,7 @@ public class Main {
 	public static void loadTeamData() {
 		ArrayList<String> data = new ArrayList<>();
 		data = Commands.importFile(teamFileName);
-		for(int i = 0; i < data.size(); i+=4) {
+		for(int i = 0; i < data.size(); i+=5) {
 			int a = i;
 			long roleId = Long.parseLong(data.get(a));
 			int idolNumber = Integer.parseInt(data.get(a+=1));
@@ -66,7 +66,7 @@ public class Main {
 	public static void loadPlayerData() {
 		ArrayList<String> data = new ArrayList<>();
 		data = Commands.importFile(playerFileName);
-		for(int i = 0; i < data.size(); i+=9) {
+		for(int i = 0; i < data.size(); i+=10) {
 			int a = i;
 			String name = data.get(a);
 			User u = User.fromId(Long.parseLong(data.get(a+=1)));
