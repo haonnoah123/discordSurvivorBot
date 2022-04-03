@@ -30,6 +30,7 @@ public class Commands extends ListenerAdapter {
 	public static String timerId = null;
 
 	public void onMessageReceived(MessageReceivedEvent event) {
+		testEvent = event;
 		String user = event.getAuthor().getName();
 		if (!user.equals("JeffBot")) {
 			User tempUser = event.getAuthor();
