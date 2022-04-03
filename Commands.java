@@ -24,6 +24,10 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.concurrent.Task;
 
 public class Commands extends ListenerAdapter {
+	
+	public static MessageReceivedEvent testEvent = null;
+	public static LocalDate timerDate = null;
+	public static String timerId = null;
 
 	public void onMessageReceived(MessageReceivedEvent event) {
 		String user = event.getAuthor().getName();
@@ -243,6 +247,16 @@ public class Commands extends ListenerAdapter {
 				} else {
 					textChannel.sendMessage("player not found");
 				}
+			}
+			
+			if(messageSent.contains(Main.prefix + "startTimer") && user.equals(Main.gameMaster)) {
+				int tempYear = Integer.parseInt(messageSent.substring(12, 16));
+				int tempMonth = Integer.parseInt(messageSent.substring(17, 19));
+				int tempDay = Integer.parseInt(messageSent.substring(20, 22));
+				LocalDate tempDate = LocalDate.of(tempYear, tempMonth, tempDay);
+				timerDate = tempDate;
+				Timer timer = new Timer();
+				timer.scheduleAtFixedRate(new TimerTaskStuff(), 0, 1000000000);
 			}
 
 			saveData(Main.playerFileName);
