@@ -40,7 +40,7 @@ public class Main {
 			loadPlayerData();
 		}
 		//System.out.println(survivorTeams.get(0).getIdolNumber());
-		JDABuilder jda = JDABuilder.createDefault("OTE5NjkzMDQ2Njg0MTk2ODY1.YbZg5Q.LuoDnbFyksmMhzo9R6meHHnO7IQ")
+		JDABuilder jda = JDABuilder.createDefault()
 				.setChunkingFilter(ChunkingFilter.ALL).setMemberCachePolicy(MemberCachePolicy.ALL)
 				.enableIntents(GatewayIntent.GUILD_MEMBERS);
 		jda.setActivity(Activity.playing("The bot version of Henry"));
