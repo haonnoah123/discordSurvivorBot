@@ -182,6 +182,17 @@ public class Commands extends ListenerAdapter {
 			
 			if(messageSent.equalsIgnoreCase(Main.prefix + "switchIdolMode") && user.equals(Main.gameMaster)) {
 				Main.largeGroupIdol = !Main.largeGroupIdol;
+				TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
+						.getTextChannelsByName("henry-bot-chat", true).get(0);
+				if(Main.largeGroupIdol) {
+					textChannel.sendMessage("large group idol mode").queue();
+				} else {
+					textChannel.sendMessage("team idol mode").queue();
+					for(Teams t: Main.survivorTeams) {
+						str += event.getJDA().getRoleById(t.getRoleId()).getAsMention() + ": " + t.getIdolNumber() + "\n";
+					}
+					textChannel.sendMessage(str).queue();
+				}
 			}
 			
 			if(messageSent.equalsIgnoreCase(Main.prefix + "changeIdol") && user.equals(Main.gameMaster)) {
