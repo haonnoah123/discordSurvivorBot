@@ -161,22 +161,27 @@ public class Commands extends ListenerAdapter {
 				}
 			}
 
-			if (messageSent.equalsIgnoreCase(Main.prefix + "startGame") && user.equals(Main.gameMaster)) {
-				Main.hasGameStarted = true;
-			}
+// 			if (messageSent.equalsIgnoreCase(Main.prefix + "startGame") && user.equals(Main.gameMaster)) {
+// 				Main.hasGameStarted = true;
+// 			}
 
-			if (messageSent.equalsIgnoreCase(Main.prefix + "useIdol")) {
-				player.playIdol();
-			}
+// 			if (messageSent.equalsIgnoreCase(Main.prefix + "useIdol")) {
+// 				player.playIdol();
+// 			}
 			
 			if (messageSent.equalsIgnoreCase(Main.prefix + "resetTeams") && user.equals(Main.gameMaster)) {
 				clearTeams();
 				findTeams(event);
-				System.out.println(Main.survivorTeams.get(0).getIdolNumber());
+				TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
+						.getTextChannelsByName("henry-bot-chat", true).get(0);
+				for(Teams t: Main.survivorTeams) {
+					str += event.getJDA().getRoleById(t.getRoleId()).getAsMention() + ": " + t.getIdolNumber() + "\n";
+				}
+				textChannel.sendMessage(str).queue();
 			}
 			
 			if(messageSent.equalsIgnoreCase(Main.prefix + "switchIdolMode") && user.equals(Main.gameMaster)) {
-				Main.largeGroupIdol = false;
+				Main.largeGroupIdol = !Main.largeGroupIdol;
 			}
 			
 			if(messageSent.equalsIgnoreCase(Main.prefix + "changeIdol") && user.equals(Main.gameMaster)) {
@@ -203,9 +208,10 @@ public class Commands extends ListenerAdapter {
 				TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
 						.getTextChannelsByName("henry-bot-chat", true).get(0);
 				textChannel.sendMessage("done").queue();
-				System.out.println(Main.survivorTeams.get(0).getIdolNumber());
-				System.out.println(Main.peoplePlaying.size());
-				System.out.println(Main.survivorTeams.size());
+				for(Teams t: Main.survivorTeams) {
+					str += event.getJDA().getRoleById(t.getRoleId()).getAsMention() + ": " + t.getIdolNumber() + "\n";
+				}
+				textChannel.sendMessage(str).queue();	
 			}
 			
 			if(messageSent.contains(Main.prefix + "removeIdol") && user.equals(Main.gameMaster)) {
@@ -250,15 +256,15 @@ public class Commands extends ListenerAdapter {
 				}
 			}
 			
-			if(messageSent.contains(Main.prefix + "startTimer") && user.equals(Main.gameMaster)) {
-				int tempYear = Integer.parseInt(messageSent.substring(12, 16));
-				int tempMonth = Integer.parseInt(messageSent.substring(17, 19));
-				int tempDay = Integer.parseInt(messageSent.substring(20, 22));
-				LocalDate tempDate = LocalDate.of(tempYear, tempMonth, tempDay);
-				timerDate = tempDate;
-				Timer timer = new Timer();
-				timer.scheduleAtFixedRate(new TimerTaskStuff(), 0, 1000000000);
-			}
+// 			if(messageSent.contains(Main.prefix + "startTimer") && user.equals(Main.gameMaster)) {
+// 				int tempYear = Integer.parseInt(messageSent.substring(12, 16));
+// 				int tempMonth = Integer.parseInt(messageSent.substring(17, 19));
+// 				int tempDay = Integer.parseInt(messageSent.substring(20, 22));
+// 				LocalDate tempDate = LocalDate.of(tempYear, tempMonth, tempDay);
+// 				timerDate = tempDate;
+// 				Timer timer = new Timer();
+// 				timer.scheduleAtFixedRate(new TimerTaskStuff(), 0, 1000000000);
+// 			}
 
 			saveData(Main.playerFileName);
 			saveTeamData(Main.teamFileName);
