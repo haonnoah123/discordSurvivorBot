@@ -50,8 +50,8 @@ public class Commands extends ListenerAdapter {
 				Main.idolNumber = (int) (Math.random() * 100 + 1);
 				Main.whenIdolChanged = LocalDate.now();
 				TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
-						.getTextChannelsByName("idol-hunting", true).get(0);
-				textChannel.sendMessage("IDOL CHANGED").queue();
+							.getTextChannelsByName("henry-bot-chat", true).get(0);
+				textChannel.sendMessage("Todays idol number: " + Main.idolNumber).queue();
 // 				System.out.println(Main.idolNumber);
 
 				// clear player votes
