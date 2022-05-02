@@ -34,16 +34,16 @@ public class Commands extends ListenerAdapter {
 		String user = event.getAuthor().getName();
 		if (!user.equals("JeffBot")) {
 			User tempUser = event.getAuthor();
-			System.out.println(tempUser);
+// 			System.out.println(tempUser);
 			Players tempPlayer = new Players(user, tempUser);
 			if (findPlayer(tempUser) == -1) {
 				Main.peoplePlaying.add(tempPlayer);
 			}
 			int indexOfUser = findPlayer(tempUser);
 			Players player = Main.peoplePlaying.get(indexOfUser);
-			System.out.println(indexOfUser);
+// 			System.out.println(indexOfUser);
 			String messageSent = event.getMessage().getContentRaw();
-			System.out.println(messageSent);
+// 			System.out.println(messageSent);
 			// Time.valueOf(LocalTime.now()).compareTo(Time.valueOf("00:00:00")) >= 1 &&
 			if (!Main.whenIdolChanged.equals(LocalDate.now())) {
 				Main.isIdolFound = false;
@@ -52,7 +52,7 @@ public class Commands extends ListenerAdapter {
 				TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
 						.getTextChannelsByName("idol-hunting", true).get(0);
 				textChannel.sendMessage("IDOL CHANGED").queue();
-				System.out.println(Main.idolNumber);
+// 				System.out.println(Main.idolNumber);
 
 				// clear player votes
 				makeNewDay();
@@ -67,7 +67,7 @@ public class Commands extends ListenerAdapter {
 			// master a chat
 			if (event.getChannel().getName().equals("idol-hunting") && Main.largeGroupIdol) {
 				if (Integer.parseInt(messageSent) == Main.idolNumber && Main.isIdolFound == false) {
-					System.out.println(event.getAuthor());
+// 					System.out.println(event.getAuthor());
 					event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You got the idol"))
 							.queue();
 					TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
@@ -81,7 +81,7 @@ public class Commands extends ListenerAdapter {
 			//team idol mode
 			if (event.getChannel().getName().contains("idol-hunting") && !Main.largeGroupIdol) {
 				if (Integer.parseInt(messageSent) == player.getTeam().getIdolNumber() && !player.getTeam().getIsIdolFound()) {
-					System.out.println(event.getAuthor());
+// 					System.out.println(event.getAuthor());
 					event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You got the idol"))
 							.queue();
 					TextChannel textChannel = event.getJDA().getGuildById("860700864489586698")
@@ -99,7 +99,7 @@ public class Commands extends ListenerAdapter {
 					if (messageSent.contains(Main.peoplePlaying.get(i).getName())) {
 						Main.peoplePlaying.get(i).addVote();
 						isFound = true;
-						System.out.println(Main.peoplePlaying.get(i).getVotesAgainst());
+// 						System.out.println(Main.peoplePlaying.get(i).getVotesAgainst());
 						event.getChannel().sendMessage("vote counted").queue();
 						break;
 					}
